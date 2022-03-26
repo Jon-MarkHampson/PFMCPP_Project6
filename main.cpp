@@ -67,8 +67,8 @@ struct Comparer                                //4
     {
         if( ( a != nullptr ) && ( b != nullptr) )
         {
-        if( a->value < b->value ) return a;
-        if( a->value > b->value ) return b;
+            if( a->value < b->value ) return a;
+            if( a->value > b->value ) return b;
         }
         return nullptr;
     }
@@ -143,7 +143,7 @@ int main()
     if(smaller != nullptr)
         std::cout << "the smaller one is << " << smaller->name << std::endl; //9
     else
-        std::cout << "Warning: smaller is pointing to a nullptr which was returned from f.compare()." << std::endl;
+        std::cout << "Warning: smaller is pointing to a nullptr which was returned from compare(). \n There are two possible caues: \n 1. the arguements passed to compare() were equal \n 2. one or both of the arguemnets passed to compare() was a nullptr" << std::endl;
     
     U u1;
     float updatedValue = 5.f;
