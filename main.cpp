@@ -36,13 +36,10 @@ struct T
 
 struct Comparer                                //4
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) //5
     {
-        if( ( a != nullptr ) && ( b != nullptr) )
-        {
-            if( a->value < b->value ) return a;
-            if( a->value > b->value ) return b;
-        }
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -50,20 +47,17 @@ struct Comparer                                //4
 struct U
 {
     float a { 0 }, b { 0 };
-    float converge(float* updatedVal)      //12
+    float converge(float& updatedVal)      //12
     {
-        if(updatedVal != nullptr)
+        std::cout << "U's a value: " << this->a << std::endl;
+        this->a = updatedVal;
+        std::cout << "U's a updated value: " << this->a << std::endl;
+        while( std::abs(this->b - this->a) > 0.001f )
         {
-            std::cout << "U's a value: " << this->a << std::endl;
-            this->a = *updatedVal;
-            std::cout << "U's a updated value: " << this->a << std::endl;
-            while( std::abs(this->b - this->a) > 0.001f )
-            {
-                /*
-                 write something that makes the distance between that->b and that->a get smaller
-                 */
-                this->b += 0.001f;
-            }
+            /*
+             write something that makes the distance between that->b and that->a get smaller
+             */
+            this->b += 0.001f;
         }
         std::cout << "U's b updated value: " << this->b << std::endl;
         return this->b * this->a;
@@ -72,23 +66,20 @@ struct U
 
 struct Converger
 {
-    static float converge(U* that, float* updatedVal )        //10
+    static float converge(U& that, const float& updatedVal)        //10
     {
-        if(that != nullptr && updatedVal != nullptr)
+        std::cout << "U's a value: " << that.a << std::endl;
+        that.a = updatedVal;
+        std::cout << "U's a updated value: " << that.a << std::endl;
+        while( std::abs(that.b - that.a) > 0.001f )
         {
-            std::cout << "U's a value: " << that->a << std::endl;
-            that->a = *updatedVal;
-            std::cout << "U's a updated value: " << that->a << std::endl;
-            while( std::abs(that->b - that->a) > 0.001f )
-            {
-                /*
-                write something that makes the distance between that->b and that->a get smaller
-                */
-                that->b += 0.1f;
-            }
+            /*
+            write something that makes the distance between that->b and that->a get smaller
+            */
+            that.b += 0.1f;
         }
-        std::cout << "U's b updated value: " << that->b << std::endl;
-        return that->b * that->a;
+        std::cout << "U's b updated value: " << that.b << std::endl;
+        return that.b * that.a;
     }
 };
         
@@ -112,7 +103,7 @@ int main()
     T t2(71, "Lynn");                                             //6
     
     Comparer f;                                            //7
-    auto* smaller = f.compare(&t1, &t2);                              //8
+    auto* smaller = f.compare(t1, t2);                              //8
     if(smaller != nullptr)
         std::cout << "the smaller one is << " << smaller->name << std::endl; //9
     else
@@ -120,8 +111,8 @@ int main()
     
     U u1;
     float updatedValue = 5.f;
-    std::cout << "[static func] u1's multiplied values: " << Converger::converge(&u1, &updatedValue) << std::endl;                  //11
+    std::cout << "[static func] u1's multiplied values: " << Converger::converge( u1, updatedValue ) << std::endl;                  //11
     
     U u2;
-    std::cout << "[member func] u2's multiplied values: " << u2.converge( &updatedValue ) << std::endl;
+    std::cout << "[member func] u2's multiplied values: " << u2.converge( updatedValue ) << std::endl;
 }
